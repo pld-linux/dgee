@@ -1,0 +1,65 @@
+diff -Naur dgee-0.1.6.orig/dglib/Makefile.in dgee-0.1.6/dglib/Makefile.in
+--- dgee-0.1.6.orig/dglib/Makefile.in	2003-12-07 10:59:52.000000000 +0100
++++ dgee-0.1.6/dglib/Makefile.in	2003-12-07 11:41:11.000000000 +0100
+@@ -21,6 +21,7 @@
+ VERSION = $(VER_MAJOR).$(VER_MINOR)
+ 
+ ALLINC = $(addprefix -I,$(AINC))
++INSTALL=/usr/bin/install
+ 
+ # Uses _BSD_SOURCE to get some definitions
+ #
+@@ -48,7 +49,7 @@
+ #
+ devel := CFLAGS += -g -DDEVELOPMENT
+ 
+-all: directories $(DGXMLLIB) $(DGXMLLIBSO) $(DGLIB) $(DGLIBSO) 
++all: directories $(DGXMLLIB) $(DGXMLLIBSO).$(VERSION) $(DGLIB) $(DGLIBSO).$(VERSION)
+ 	@echo Done
+ 
+ directories:
+@@ -60,10 +61,11 @@
+ 	@ar -r $@ $(OBJS)
+ 	@ranlib $@
+ 
+-$(DGLIBSO): $(OBJS) 
++$(DGLIBSO).$(VERSION): $(OBJS) 
+ 	@echo Creating shared library $(DGLIBSO)
+ 	@rm -f $@
+-	$(LD) -shared -noinhibit-exec -o$@ $(OBJS) -L$(PXLIBDIR) -lpxtra
++	$(LD) -shared -h$(DGLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJS) -L$(PXLIBDIR) -lpxtra
++	ln -s $@ $(DGLIBSO)
+ 
+ $(DGXMLLIB): $(OBJSXML) $(HEAD)
+ 	@echo Creating library $(DGXMLLIB)
+@@ -71,10 +73,11 @@
+ 	@ar -r $@ $(OBJSXML)
+ 	@ranlib $@
+ 
+-$(DGXMLLIBSO): $(OBJSXML) 
++$(DGXMLLIBSO).$(VERSION): $(OBJSXML) 
+ 	@echo Creating shared library $(DGXMLLIBSO)
+ 	@rm -f $@
+-	$(LD) -shared -noinhibit-exec -o$@ $(OBJSXML) -L$(PXLIBDIR) -lpxtra
++	$(LD) -shared -h$(DGXMLLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJSXML) -L$(PXLIBDIR) -lpxtra
++	ln -s $@ $(DGXMLLIBSO)
+ 
+ xmltreetest: $(OBJ)/test.o
+ 	$(CC) $(OBJ)/main.o $(LFLAG) -L. -o$@ -ldgee -lexpat
+@@ -92,10 +95,10 @@
+ 
+ install:
+ 	@echo "Installing DGEE Libraries"
+-	@../mkinstalldirs $(i_libdir) $(MINC)
+-	@../install-lib $(DGLIB) $(DGLIB) $(i_libdir) $(VER_MAJOR) $(VER_MINOR)
+-	@../install-lib $(DGLIBSO) $(DGLIBSO) $(i_libdir) $(VER_MAJOR) $(VER_MINOR)
+-	@../install-lib $(DGXMLLIB) $(DGXMLLIB) $(i_libdir) $(VER_MAJOR) $(VER_MINOR)
+-	@../install-lib $(DGXMLLIBSO) $(DGXMLLIBSO) $(i_libdir) $(VER_MAJOR) $(VER_MINOR)
+-
++	$(INSTALL) -d $(i_libdir)
++	$(INSTALL) $(DGLIB) $(i_libdir)/$(DGLIB)
++	$(INSTALL) $(DGLIBSO).$(VERSION) $(i_libdir)/$(DGLIBSO).$(VERSION)
++	$(INSTALL) $(DGXMLLIB) $(i_libdir)/$(DGXMLLIB)
++	$(INSTALL) $(DGXMLLIBSO).$(VERSION) $(i_libdir)/$(DGXMLLIBSO).$(VERSION)
++ 
+ #end
