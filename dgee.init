@@ -1,0 +1,143 @@
+#!/bin/sh
+#
+# dgee	dgee short service description
+#
+# chkconfig:	345 <startr_level> <stop_level>
+#
+# description:	dgee long service description
+#
+# $Id$
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+
+# Set defaults
+GWCONFIG=/etc/dgeeconf.bin
+SRC_CONFIG=/etc/dgeeconf.xml
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/dgee ] && . /etc/sysconfig/dgee
+
+
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		# nls "ERROR: Networking is down. %s can't be run." dgee
+		msg_network_down dgee
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+
+# See how we were called.
+case "$1" in
+  start)
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/dgee ]; then
+		# show "Starting %s service" dgee
+		msg_starting dgee
+		busy
+		goldwater --prompt='dotGNU DGEE' start
+		if [ $?="0" ]; then
+		    log_succes "dgee startup"
+		    goldwater --prompt='dotGNU DGEE' boot
+		    if [ $?="0" ]; then
+			    log_success "dgeews startup"
+			    ok
+			    touch /var/lock/subsys/dgee
+			    exit 0
+		    else
+			log_fail "dgeews startup"
+			goldwater --prompt='dotGNU DGEE' stop
+			if [ $?!="0" ]; then
+			    log_fail "dgee shutdown"
+			fi
+			fail
+			exit 1
+		    fi
+		else
+		    fail
+		    log_fail "dgee startup"
+		    exit 1
+		fi
+	else
+		# show "%s service is already running." dgee
+		msg_already_running dgee
+	fi
+	;;
+  stop)
+	if [ -f /var/lock/subsys/dgee ]; then
+		# Stop daemons.
+		# show "Stopping %s service" dgee
+		msg_stopping dgee (and web services)
+		busy
+		goldwater --prompt='dotGNU DGEE' stop
+		if [ $?="0" ]; then
+		    log_succes "dgee shutdown"
+		    ok
+		    rm -f /var/lock/subsys/dgee
+		    exit 0
+		else
+		    log_fail "dgee shutdown"
+		    fail
+		    rm -f /var/lock/subsys/dgee
+		    exit 1
+		fi  	
+	else
+		# show "%s service is not running." dgee
+		msg_not_running dgee
+	fi
+	;;
+  restart)
+	$0 stop
+	$0 start
+	exit $?
+	;;
+  reload-ws)
+	if [ -f /var/lock/subsys/dgee ]; then
+		# show "Reload %s service" dgee
+		msg_reloading dgee\'s web services
+		goldwater --prompt='dotGNU DGEE' cycle
+		RETVAL=$?
+	else
+		# show "%s service is not running." dgee
+		msg_not_running dgee >&2
+		RETVAL=7
+	fi
+	;;
+  force-reload)
+	# or if it doesn't
+	$0 restart
+
+	exit $?
+	;;
+  status)
+	status dgee
+	RETVAL=$?
+	;;
+  compilecfg)
+  	if [ -n $2 ]; then
+	    SRC_CONFIG=$2
+	fi
+	/usr/bin/gwmkcfg $SRC_CONFIG
+	RETVAL=$?
+	;;
+  *)
+	# show "Usage: %s {start|stop|restart|reload|force-reload|status}"
+	msg_usage "$0 \
+		{start|stop|restart|reload-ws|force-reload|status|compilecfg}"
+	exit 3
+esac
+
+exit $RETVAL
+
+# This must be last line !
+# vi:syntax=sh:tw=78:ts=8:sw=4
