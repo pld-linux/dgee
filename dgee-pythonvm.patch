@@ -6,7 +6,7 @@ diff -Naur dgee-0.1.6.orig/pythonvm/Makefile.in dgee-0.1.6/pythonvm/Makefile.in
  LFLAG   = -L../dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
  
 -ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.2/config -lnsl -ldl -lm -lpython2.2
-+ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -lnsl -ldl -lm -lpython2.3
++ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -lnsl -ldl -lm -lpython
  
  OBJS = $(addprefix $(OBJ)/,$(OBJF))
  
@@ -28,7 +28,7 @@ diff -Naur dgee-0.1.6.orig/pythonvm/pythonvm.c dgee-0.1.6/pythonvm/pythonvm.c
  #endif
  
 -#include <python2.2/Python.h>
-+#include <python2.3/Python.h>
++#include <Python.h>
  
  #include "pythonvm.h"
  #include "dgreadenv.h"

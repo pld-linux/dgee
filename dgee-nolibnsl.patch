@@ -26,8 +26,8 @@
  
  LFLAG   = -L../dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
  
--ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -lnsl -ldl -lm -lpython2.3
-+ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -ldl -lm -lpython2.3
+-ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -lnsl -ldl -lm -lpython
++ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -ldl -lm -lpython
  
  OBJS = $(addprefix $(OBJ)/,$(OBJF))
  
