@@ -10,7 +10,7 @@
 Summary:	The DotGNU Execution Environment Core
 Name:		dgee
 Version:	0.1.6
-Release:	%{_rel}.0.1.5
+Release:	%{_rel}.0.2
 Source0:	http://www.nfluid.com/download/src/%{name}-%{version}-%{_rel}.tgz
 # Source0-md5:	a2573a076832c4c7212479cabda15eff
 Source1:	%{name}.init
@@ -18,6 +18,7 @@ Source2:	%{name}.logrotate
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-apache.patch
 Patch2:		%{name}-dglib_fix_so.patch
+Patch3:		%{name}-pythonvm.patch
 License:	GPL
 Vendor:		DotGNU
 Group:		Networking/Daemons
@@ -43,6 +44,7 @@ of accepting, validating and satisfying web service requests.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__aclocal}
@@ -54,6 +56,7 @@ of accepting, validating and satisfying web service requests.
 	--with-repository=/var/lib/%{name} \
 	--with-username=http \
 	--with-usergroup=http \
+	--with-python \
 %if %{with apache1}
 	--with-apache=%{_prefix}
 %else
