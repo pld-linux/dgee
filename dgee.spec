@@ -31,9 +31,12 @@ BuildRequires:	autoconf >= 2.13
 BuildRequires:	automake
 BuildRequires:	expat-devel
 BuildRequires:	libffi-devel
+BuildRequires:	gc-devel
 BuildRequires:	goldwater-devel => 0.3.4
 BuildRequires:	phlib-devel => 1.20
+BuildRequires:	pnet-compiler-csharp
 BuildRequires:	pnet-devel => 0.6.0-2
+BuildRequires:	pnetlib-base
 BuildRequires:	%{apxs}
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	%{apxs}
@@ -65,6 +68,8 @@ sprawdzania poprawno¶ci i wykonywania ¿±dañ us³ug WWW.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+CFLAGS="%{rpmcflags} -I/usr/include/python2.4 -I/usr/include/python2.3"
+export CFLAGS
 %configure \
 	cflags=our \
 	--with-goldwater=%{_prefix} \
