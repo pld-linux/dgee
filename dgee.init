@@ -25,6 +25,37 @@ SRC_CONFIG=/etc/dgeeconf.xml
 [ -f /etc/sysconfig/dgee ] && . /etc/sysconfig/dgee
 export GWCONFIG
 
+goldwater_start () {
+    stat=`goldwater --prompt='dotGNU DGEE' start | grep -e"Goldwater Started."`
+    if [ "$stat" = "Goldwater Started." ]; then
+	return 0
+    fi
+    return 1
+}
+    
+goldwater_stop () {
+    goldwater --prompt='dotGNU DGEE' stop | \
+    	grep -e "++ Halting" | \
+	awk 'BEGIN{err=0}/$12~"Halted"/{next}{err++}END{exit err}'
+    if [ $? = "0" ]; then
+	return 0;
+    else
+	return 1;
+    fi
+}
+
+goldwater_boot () {
+    goldwater --prompt='dotGNU DGEE' boot | \
+    	grep -e "++ Booting" | \
+	awk 'BEGIN{err=0}/$12~"Booted"/{next}{err++}END{exit err}'
+    
+    if [ $? = "0" ]; then
+	return 0
+    else
+	return 1
+    fi
+}
+       
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
@@ -46,27 +77,27 @@ case "$1" in
 		# show "Starting %s service" dgee
 		msg_starting dgee
 		busy
-		goldwater --prompt='dotGNU DGEE' start
-		if [ $?="0" ]; then
+		goldwater_start
+		if [ $? = "0" ]; then
 		    log_success "dgee startup"
-		    goldwater --prompt='dotGNU DGEE' boot
-		    if [ $?="0" ]; then
+		    goldwater_boot
+		    if [ $? = "0" ]; then
 			    log_success "dgeews startup"
 			    ok
 			    touch /var/lock/subsys/dgee
 			    exit 0
 		    else
-			log_fail "dgeews startup"
-			goldwater --prompt='dotGNU DGEE' stop
-			if [ $?!="0" ]; then
-			    log_fail "dgee shutdown"
+			log_failed "dgeews startup"
+			goldwater_stop
+			if [ $? != "0" ]; then
+			    log_failed "dgee shutdown"
 			fi
 			fail
 			exit 1
 		    fi
 		else
 		    fail
-		    log_fail "dgee startup"
+		    log_failed "dgee startup"
 		    exit 1
 		fi
 	else
@@ -80,14 +111,14 @@ case "$1" in
 		# show "Stopping %s service" dgee
 		msg_stopping dgee
 		busy
-		goldwater --prompt='dotGNU DGEE' stop
-		if [ $?="0" ]; then
+		goldwater_stop
+		if [ $? = "0" ]; then
 		    log_success "dgee shutdown"
 		    ok
 		    rm -f /var/lock/subsys/dgee
 		    exit 0
 		else
-		    log_fail "dgee shutdown"
+		    log_failed "dgee shutdown"
 		    fail
 		    rm -f /var/lock/subsys/dgee
 		    exit 1
@@ -105,7 +136,6 @@ case "$1" in
   reload-ws)
 	if [ -f /var/lock/subsys/dgee ]; then
 		# show "Reload %s service" dgee
-		msg_reloading dgee\'s web services
 		goldwater --prompt='dotGNU DGEE' cycle
 		RETVAL=$?
 	else
