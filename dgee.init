@@ -2,7 +2,8 @@
 #
 # dgee	dgee short service description
 #
-# chkconfig:	345 <startr_level> <stop_level>
+#Start right before apache:
+# chkconfig:	345 84 16
 #
 # description:	dgee long service description
 #
