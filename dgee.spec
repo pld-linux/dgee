@@ -1,3 +1,9 @@
+#
+# TODO: 
+#  --without apache1 (default) should build mod_dgee.so for 
+#  apache2 - it doesn't
+# 
+
 %bcond_with	apache1
 %define         apxs	/usr/sbin/apxs
 %define		_rel	2
@@ -22,7 +28,10 @@ BuildRequires:	phlib-devel => 1.20
 BuildRequires:	pnet-devel => 0.6.0-2
 BuildRequires:	%{apxs}
 Requires:	apache
+Requires:	goldwater
 Requires(post,preun):	%{apxs}
+Requires(post,preun):   /sbin/chkconfig
+Requires(post,postun):  /sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -101,6 +110,7 @@ if [ -f /var/lock/subsys/httpd ]; then
 fi
 
 /sbin/ldconfig
+/sbin/chkconfig --add dgee
 
 %preun
 if [ "$1" = "0" ]; then
@@ -115,6 +125,7 @@ if [ "$1" = "0" ]; then
                 /etc/rc.d/init.d/httpd restart 1>&2
         fi
 fi
+/sbin/chkconfig --del dgee
 
 %postun
 /sbin/ldconfig
