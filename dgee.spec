@@ -3,9 +3,10 @@
 #  --without apache1 (default) should build mod_dgee.so for 
 #  apache2 - it doesn't
 # 
-
+# Conditional build:
 %bcond_with	apache1
-%define         apxs	/usr/sbin/apxs
+#
+%define		apxs	/usr/sbin/apxs
 %define		_rel	2
 Summary:	The DotGNU Execution Environment Core
 Summary(pl):	Podstawa ¶rodowiska wykonawczego DotGNU
@@ -36,7 +37,7 @@ BuildRequires:	pnet-devel => 0.6.0-2
 BuildRequires:	%{apxs}
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	%{apxs}
-Requires(post,preun):   /sbin/chkconfig
+Requires(post,preun):	/sbin/chkconfig
 Requires:	apache
 Requires:	goldwater
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -122,39 +123,39 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 %if %{with apache1}
 if [ -f /etc/httpd/httpd.conf ] && \
-    ! grep -q "^Include.*/mod_dgee.conf" /etc/httpd/httpd.conf; then
-        echo "Include /etc/httpd/mod_dgee.conf" >> /etc/httpd/httpd.conf
+	! grep -q "^Include.*/mod_dgee.conf" /etc/httpd/httpd.conf; then
+		echo "Include /etc/httpd/mod_dgee.conf" >> /etc/httpd/httpd.conf
 fi
 %endif
 
 %{apxs} -e -a -n dgee %{_pkglibdir}/mod_dgee.so 1>&2
 if [ -f /var/lock/subsys/httpd ]; then
-        /etc/rc.d/init.d/httpd restart 1>&2
+	/etc/rc.d/init.d/httpd restart 1>&2
 fi
 
 if [ -f /var/lock/subsys/dgee ]; then
-        /etc/rc.d/init.d/dgee restart 1>&2
+	/etc/rc.d/init.d/dgee restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/dgee start\" to start goltwater and dgee services."
+	echo "Run \"/etc/rc.d/init.d/dgee start\" to start goltwater and dgee services."
 fi
 /sbin/chkconfig --add dgee
 
 %preun
 if [ "$1" = "0" ]; then
 %if %{with apache1}
-        umask 027
-        grep -E -v "^Include.*/mod_dgee.conf" /etc/httpd/httpd.conf > \
-                /etc/httpd/httpd.conf.tmp
-        mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
+	umask 027
+	grep -E -v "^Include.*/mod_dgee.conf" /etc/httpd/httpd.conf > \
+		/etc/httpd/httpd.conf.tmp
+	mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
 %endif
-        %{apxs} -e -A -n dgee %{_pkglibdir}/mod_dgee.so 1>&2
-        if [ -f /var/lock/subsys/httpd ]; then
-                /etc/rc.d/init.d/httpd restart 1>&2
-        fi
-        if [ -f /var/lock/subsys/dgee ]; then
-                /etc/rc.d/init.d/dgee stop 1>&2
-        fi
-        /sbin/chkconfig --del dgee
+	%{apxs} -e -A -n dgee %{_pkglibdir}/mod_dgee.so 1>&2
+	if [ -f /var/lock/subsys/httpd ]; then
+		/etc/rc.d/init.d/httpd restart 1>&2
+	fi
+	if [ -f /var/lock/subsys/dgee ]; then
+		/etc/rc.d/init.d/dgee stop 1>&2
+	fi
+	/sbin/chkconfig --del dgee
 fi
 
 %postun	-p /sbin/ldconfig
