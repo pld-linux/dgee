@@ -27,7 +27,7 @@ diff -Naur dgee-0.1.6.orig/dglib/Makefile.in dgee-0.1.6/dglib/Makefile.in
  	@echo Creating shared library $(DGLIBSO)
  	@rm -f $@
 -	$(LD) -shared -noinhibit-exec -o$@ $(OBJS) -L$(PXLIBDIR) -lpxtra
-+	$(LD) -shared -h$(DGLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJS) -L$(PXLIBDIR) -lpxtra
++	$(LD) -shared -h$(DGLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJS) -L$(PXLIBDIR) -lpxtra -lgwtx
 +	ln -s $@ $(DGLIBSO)
  
  $(DGXMLLIB): $(OBJSXML) $(HEAD)
@@ -41,7 +41,7 @@ diff -Naur dgee-0.1.6.orig/dglib/Makefile.in dgee-0.1.6/dglib/Makefile.in
  	@echo Creating shared library $(DGXMLLIBSO)
  	@rm -f $@
 -	$(LD) -shared -noinhibit-exec -o$@ $(OBJSXML) -L$(PXLIBDIR) -lpxtra
-+	$(LD) -shared -h$(DGXMLLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJSXML) -L$(PXLIBDIR) -lpxtra
++	$(LD) -shared -h$(DGXMLLIBSO).$(VER_MAJOR) -noinhibit-exec -o$@ $(OBJSXML) -L$(PXLIBDIR) -lpxtra -lexpat
 +	ln -s $@ $(DGXMLLIBSO)
  
  xmltreetest: $(OBJ)/test.o
