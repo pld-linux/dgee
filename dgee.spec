@@ -6,16 +6,17 @@
 # Conditional build:
 %bcond_with	apache1
 #
-%define		apxs	/usr/sbin/apxs
-%define		_rel	2
+%define		apxs		/usr/sbin/apxs
+%define		subver		2
+%define		base_version	0.1.6
 Summary:	The DotGNU Execution Environment Core
 Summary(pl):	Podstawa ¶rodowiska wykonawczego DotGNU
 Name:		dgee
-Version:	0.1.6
-Release:	%{_rel}.1
+Version:	%{base_version}_%{subver}
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
-Source0:	http://www.nfluid.com/download/src/%{name}-%{version}-%{_rel}.tgz
+Source0:	http://www.nfluid.com/download/src/%{name}-%{base_version}-%{subver}.tgz
 # Source0-md5:	a2573a076832c4c7212479cabda15eff
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
@@ -55,7 +56,7 @@ Execution Environment) dostarczaj±c± funkcjonalno¶æ przyjmowania,
 sprawdzania poprawno¶ci i wykonywania ¿±dañ us³ug WWW.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{base_version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
