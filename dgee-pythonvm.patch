@@ -1,0 +1,34 @@
+diff -Naur dgee-0.1.6.orig/pythonvm/Makefile.in dgee-0.1.6/pythonvm/Makefile.in
+--- dgee-0.1.6.orig/pythonvm/Makefile.in	2003-12-08 11:26:53.000000000 +0100
++++ dgee-0.1.6/pythonvm/Makefile.in	2003-12-08 11:42:01.000000000 +0100
+@@ -20,7 +20,7 @@
+ 
+ LFLAG   = -L../dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
+ 
+-ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.2/config -lnsl -ldl -lm -lpython2.2
++ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -lnsl -ldl -lm -lpython2.3
+ 
+ OBJS = $(addprefix $(OBJ)/,$(OBJF))
+ 
+@@ -46,6 +46,6 @@
+ 
+ install:
+ 	@echo "Installing $(TARGET)..."
+-	@../mkinstalldirs $(BIN)
+-	@../install-sh -c $(TARGET) $(BIN)
+-	@../install-sh -c dgeeinvoke.py $(libexec)
++	@../mkinstalldirs $(DESTDIR)$(BIN)
++	@../install-sh -c $(TARGET) $(DESTDIR)$(BIN)
++	@../install-sh -c dgeeinvoke.py $(DESTDIR)$(libexec)
+diff -Naur dgee-0.1.6.orig/pythonvm/pythonvm.c dgee-0.1.6/pythonvm/pythonvm.c
+--- dgee-0.1.6.orig/pythonvm/pythonvm.c	2003-12-08 11:26:53.000000000 +0100
++++ dgee-0.1.6/pythonvm/pythonvm.c	2003-12-08 11:41:00.000000000 +0100
+@@ -22,7 +22,7 @@
+ #include <unistd.h>
+ #endif
+ 
+-#include <python2.2/Python.h>
++#include <python2.3/Python.h>
+ 
+ #include "pythonvm.h"
+ #include "dgreadenv.h"
