@@ -10,9 +10,10 @@ Patch1:		%{name}-apache.patch
 License:	GPL
 Vendor:		DotGNU
 Group:		Networking/Daemons
-BuildRequires:	phlib-devel => 1.20
-BuildRequires:	goldwater-devel => 0.3.4
 BuildRequires:	expat-devel
+BuildRequires:	goldwater-devel => 0.3.4
+BuildRequires:	phlib-devel => 1.20
+BuildRequires:	pnet-devel => 0.6.0-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
