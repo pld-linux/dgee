@@ -1,0 +1,11 @@
+--- dgee-0.1.6/dglib/Makefile.in.orig	2004-01-14 09:30:17.000000000 +0000
++++ dgee-0.1.6/dglib/Makefile.in	2004-01-14 09:38:54.000000000 +0000
+@@ -25,7 +25,7 @@
+ 
+ # Uses _BSD_SOURCE to get some definitions
+ #
+-CFLAGS = @CFLAGS@ -D_SVID_SOURCE @LOCAL_CFLAGS@ -c $(ALLINC)
++CFLAGS = @CFLAGS@ -D_SVID_SOURCE @LOCAL_CFLAGS@ -c $(ALLINC) -fPIC
+ 
+ OBJFXML  = \
+ buildtree.o \
