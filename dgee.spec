@@ -29,6 +29,7 @@ BuildRequires:	apache-devel
 BuildRequires:	autoconf >= 2.13
 BuildRequires:	automake
 BuildRequires:	expat-devel
+BuildRequires:	libffi-devel
 BuildRequires:	goldwater-devel => 0.3.4
 BuildRequires:	phlib-devel => 1.20
 BuildRequires:	pnet-devel => 0.6.0-2
