@@ -4,10 +4,11 @@
 Summary:	The DotGNU Execution Environment Core
 Name:		dgee
 Version:	0.1.6
-Release:	%{_rel}.0.1.4
+Release:	%{_rel}.0.1.5
 Source0:	http://www.nfluid.com/download/src/%{name}-%{version}-%{_rel}.tgz
-Source1:	%{name}.init
 # Source0-md5:	a2573a076832c4c7212479cabda15eff
+Source1:	%{name}.init
+Source2:	%{name}.logrotate
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-apache.patch
 Patch2:		%{name}-dglib_fix_so.patch
@@ -78,9 +79,13 @@ install cslib/DotGNU/DGEE/Protocols/XmlRpc/XmlRpcService.exe \
 
 install -d $RPM_BUILD_ROOT/var/lib/%{name}/{index,data}
 install -d $RPM_BUILD_ROOT/var/log/%{name}
+touch $RPM_BUILD_ROOT/var/log/%{name}/{%{name}.log,stdout,stderr}
 install -d $RPM_BUILD_ROOT/var/log/archiv/%{name}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install -d $RPM_BUILD_ROOT/etc/logrotate.d
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+
 
 %post
 %if %{with apache1}
@@ -94,6 +99,8 @@ fi
 if [ -f /var/lock/subsys/httpd ]; then
         /etc/rc.d/init.d/httpd restart 1>&2
 fi
+
+/sbin/ldconfig
 
 %preun
 if [ "$1" = "0" ]; then
@@ -109,6 +116,8 @@ if [ "$1" = "0" ]; then
         fi
 fi
 
+%postun
+/sbin/ldconfig
 
 %clean
 #rm -rf $RPM_BUILD_ROOT
@@ -118,7 +127,8 @@ fi
 %doc BINARYINSTALL INSTALL QUICKSTART README COPYING
 %attr(755,root,root) %{_bindir}/*
 %config %{_sysconfdir}/%{name}*
-%{_libdir}/%{name}
+%dir %{_libdir}/%{name}
+%attr(755,root,root) %{_libdir}/%{name}/*
 %{_libdir}/libdgee.*
 %{_libdir}/libdgxml.*
 %if %{with apache1}
@@ -131,8 +141,10 @@ fi
 %{_datadir}/%{name}
 /var/lib/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%attr(750,root,root) %dir /var/log/%{name}
+%attr(730,root,http) %dir /var/log/%{name}
+%attr(660,root,http) /var/log/%{name}/*
 %attr(750,root,root) %dir /var/log/archiv/%{name}
+%attr(640,root,root) %config(noreplace) /etc/logrotate.d/*
 
 # Local variables:
 # mode: rpm-spec
