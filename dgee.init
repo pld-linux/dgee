@@ -9,13 +9,11 @@
 #
 # $Id$
 
-
 # Source function library
 . /etc/rc.d/init.d/functions
 
 # Get network config
 . /etc/sysconfig/network
-
 
 # Set defaults
 GWCONFIG=/etc/dgeeconf.bin
@@ -26,40 +24,37 @@ SRC_CONFIG=/etc/dgeeconf.xml
 export GWCONFIG
 
 goldwater_start () {
-    stat=`goldwater --prompt='dotGNU DGEE' start | grep -e"Goldwater Started."`
-    if [ "$stat" = "Goldwater Started." ]; then
-	return 0
-    fi
-    return 1
+	stat=`goldwater --prompt='dotGNU DGEE' start | grep -e"Goldwater Started."`
+	if [ "$stat" = "Goldwater Started." ]; then
+		return 0
+	fi
+	return 1
 }
-    
+
 goldwater_stop () {
-    goldwater --prompt='dotGNU DGEE' stop | \
-    	grep -e "++ Halting" | \
-	awk 'BEGIN{err=0}/$12~"Halted"/{next}{err++}END{exit err}'
-    if [ $? = "0" ]; then
-	return 0;
-    else
+	goldwater --prompt='dotGNU DGEE' stop | \
+		grep -e "++ Halting" | \
+		awk 'BEGIN{err=0}/$12~"Halted"/{next}{err++}END{exit err}'
+	if [ $? = "0" ]; then
+		return 0;
+	fi
 	return 1;
-    fi
 }
 
 goldwater_boot () {
-    goldwater --prompt='dotGNU DGEE' boot | \
-    	grep -e "++ Booting" | \
-	awk 'BEGIN{err=0}/$12~"Booted"/{next}{err++}END{exit err}'
-    
-    if [ $? = "0" ]; then
-	return 0
-    else
+	goldwater --prompt='dotGNU DGEE' boot | \
+		grep -e "++ Booting" | \
+		awk 'BEGIN{err=0}/$12~"Booted"/{next}{err++}END{exit err}'
+
+	if [ $? = "0" ]; then
+		return 0
+	fi
 	return 1
-    fi
 }
-       
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network ]; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
 		# nls "ERROR: Networking is down. %s can't be run." dgee
 		msg_network_down dgee
 		exit 1
@@ -68,7 +63,7 @@ else
 	exit 0
 fi
 
-
+RETVAL=0
 # See how we were called.
 case "$1" in
   start)
@@ -79,26 +74,25 @@ case "$1" in
 		busy
 		goldwater_start
 		if [ $? = "0" ]; then
-		    log_success "dgee startup"
-		    goldwater_boot
-		    if [ $? = "0" ]; then
-			    log_success "dgeews startup"
-			    ok
-			    touch /var/lock/subsys/dgee
-			    exit 0
-		    else
-			log_failed "dgeews startup"
-			goldwater_stop
-			if [ $? != "0" ]; then
-			    log_failed "dgee shutdown"
+			log_success "dgee startup"
+			goldwater_boot
+			if [ $? = "0" ]; then
+				log_success "dgeews startup"
+				ok
+				touch /var/lock/subsys/dgee
+			else
+				log_failed "dgeews startup"
+				goldwater_stop
+				if [ $? != "0" ]; then
+					log_failed "dgee shutdown"
+				fi
+				fail
+				exit 1
 			fi
-			fail
-			exit 1
-		    fi
 		else
-		    fail
-		    log_failed "dgee startup"
-		    exit 1
+			fail
+			log_failed "dgee startup"
+			exit 1
 		fi
 	else
 		# show "%s service is already running." dgee
@@ -113,29 +107,26 @@ case "$1" in
 		busy
 		goldwater_stop
 		if [ $? = "0" ]; then
-		    log_success "dgee shutdown"
-		    ok
-		    rm -f /var/lock/subsys/dgee
-		    exit 0
+			log_success "dgee shutdown"
+			ok
+			rm -f /var/lock/subsys/dgee
 		else
-		    log_failed "dgee shutdown"
-		    fail
-		    rm -f /var/lock/subsys/dgee
-		    exit 1
+			log_failed "dgee shutdown"
+			fail
+			rm -f /var/lock/subsys/dgee
 		fi  	
 	else
 		# show "%s service is not running." dgee
 		msg_not_running dgee
 	fi
 	;;
-  restart)
+  restart|force-reload)
 	$0 stop
 	$0 start
 	exit $?
 	;;
-  reload-ws)
+  reload)
 	if [ -f /var/lock/subsys/dgee ]; then
-		# show "Reload %s service" dgee
 		goldwater --prompt='dotGNU DGEE' cycle
 		RETVAL=$?
 	else
@@ -144,19 +135,13 @@ case "$1" in
 		RETVAL=7
 	fi
 	;;
-  force-reload)
-	# or if it doesn't
-	$0 restart
-
-	exit $?
-	;;
   status)
 	status dgee
 	RETVAL=$?
 	;;
   compilecfg)
   	if [ -n $2 ]; then
-	    SRC_CONFIG=$2
+		SRC_CONFIG=$2
 	fi
 	/usr/bin/gwmkcfg $SRC_CONFIG
 	RETVAL=$?
