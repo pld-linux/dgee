@@ -1,24 +1,26 @@
 %bcond_with	apache1
-
+%define         apxs	/usr/sbin/apxs
 %define		_rel	2
 Summary:	The DotGNU Execution Environment Core
 Name:		dgee
 Version:	0.1.6
-Release:	%{_rel}.0.1.1
+Release:	%{_rel}.0.1.3
 Source0:	http://www.nfluid.com/download/src/%{name}-%{version}-%{_rel}.tgz
 # Source0-md5:	a2573a076832c4c7212479cabda15eff
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-apache.patch
+Patch2:		%{name}-dglib_fix_so.patch
 License:	GPL
 Vendor:		DotGNU
 Group:		Networking/Daemons
-Requires:	apache
-Requires(post,preun):   %{apxs}
 BuildRequires:	apache-devel
 BuildRequires:	expat-devel
 BuildRequires:	goldwater-devel => 0.3.4
 BuildRequires:	phlib-devel => 1.20
 BuildRequires:	pnet-devel => 0.6.0-2
+BuildRequires:	%{apxs}
+Requires:	apache
+Requires(post,preun):	%{apxs}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -29,7 +31,7 @@ of accepting, validating and satisfying web service requests.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-
+%patch2 -p1
 %build
 %{__aclocal}
 %{__autoconf}
@@ -37,6 +39,8 @@ of accepting, validating and satisfying web service requests.
 %configure \
 	--with-goldwater=%{_prefix} \
 	--with-pnet=%{_prefix} \
+	--with-username=http \
+	--with-usergroup=http \
 %if %{with apache1}
 	--with-apache=%{_prefix}
 %else
@@ -91,7 +95,7 @@ fi
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
