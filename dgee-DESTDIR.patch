@@ -1,0 +1,65 @@
+--- dgee-0.1.6/dglib/Makefile.in~	Sun Sep 21 12:47:29 2003
++++ dgee-0.1.6/dglib/Makefile.in	Sat Dec  6 00:05:28 2003
+@@ -1,8 +1,8 @@
+ SHELL = /bin/sh
+ 
+ prefix = $(DESTDIR)@prefix@
+-exec_prefix = @exec_prefix@
+-i_libdir =@libdir@
++exec_prefix = $(DESTDIR)@exec_prefix@
++i_libdir =$(DESTDIR)@libdir@
+ 
+ DGXMLLIB    = libdgxml.a
+ DGXMLLIBSO  = libdgxml.so
+--- dgee-0.1.6/smgr/Makefile.in~	Thu Oct 30 21:37:56 2003
++++ dgee-0.1.6/smgr/Makefile.in	Sat Dec  6 00:22:10 2003
+@@ -3,8 +3,8 @@
+ TARGET	= DGSvcMgr
+ 
+ prefix = $(DESTDIR)@prefix@
+-exec_prefix = @exec_prefix@
+-libexec = @libexecdir@/dgee/
++exec_prefix = $(DESTDIR)@exec_prefix@
++libexec = $(DESTDIR)@libexecdir@/dgee/
+ 
+ BIN = ${libexec}
+ INC	= 
+--- dgee-0.1.6/rmgr/Makefile.in~	Sun Sep 21 12:33:22 2003
++++ dgee-0.1.6/rmgr/Makefile.in	Sat Dec  6 00:25:27 2003
+@@ -3,8 +3,8 @@
+ TARGET	= DGResMgr
+ 
+ prefix = $(DESTDIR)@prefix@
+-exec_prefix = @exec_prefix@
+-libexec = @libexecdir@/dgee/
++exec_prefix = $(DESTDIR)@exec_prefix@
++libexec = $(DESTDIR)@libexecdir@/dgee/
+ 
+ BIN = ${libexec}
+ INC	= 
+--- dgee-0.1.6/pnetvm/Makefile.am~	Sun Sep 21 12:37:59 2003
++++ dgee-0.1.6/pnetvm/Makefile.am	Sat Dec  6 00:27:40 2003
+@@ -1,7 +1,7 @@
+ TARGET = DGpnetVM
+ prefix = $(DESTDIR)@prefix@
+-exec_prefix = @exec_prefix@
+-BIN = @libexecdir@/dgee/
++exec_prefix = $(DESTDIR)@exec_prefix@
++BIN = $(DESTDIR)@libexecdir@/dgee/
+ INC = 
+ OBJ = obj
+ 
+--- dgee-0.1.6/html/Makefile.in~	Thu Oct 30 21:49:23 2003
++++ dgee-0.1.6/html/Makefile.in	Sat Dec  6 00:29:32 2003
+@@ -2,9 +2,9 @@
+ TARGET	= 
+ 
+ prefix = $(DESTDIR)@sandbox@@prefix@
+-exec_prefix = @exec_prefix@
++exec_prefix = $(DESTDIR)@exec_prefix@
+ 
+-HTML = @datadir@/dgee/html
++HTML = $(DESTDIR)@datadir@/dgee/html
+ 
+ SRC = \
+ dgmain.css \

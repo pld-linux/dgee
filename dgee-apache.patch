@@ -1,0 +1,28 @@
+--- dgee-0.1.6/apache/Makefile.am~	Fri Oct 24 00:10:01 2003
++++ dgee-0.1.6/apache/Makefile.am	Sat Dec  6 00:40:29 2003
+@@ -64,7 +64,9 @@
+ 	fi
+ 
+ install-mod: $(MOD_DGEE) install-mod-conf
+-	$(APXS) -i -S LIBEXECDIR=$(MOD_DGEE_DIR) -a $<
++#	$(APXS) -i -S LIBEXECDIR=$(MOD_DGEE_DIR) -a $<
++	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache/
++	$(INSTALL) $(MOD_DGEE) $(DESTDIR)$(libexecdir)/apache/
+ 
+ directories:
+ 
+--- dgee-0.1.6/apache/Makefile.am~	Sat Dec  6 00:50:13 2003
++++ dgee-0.1.6/apache/Makefile.am	Sat Dec  6 00:52:28 2003
+@@ -58,9 +58,9 @@
+ install-mod-conf:
+ 	if [ -e $(MOD_DGEE) ] ; \
+ 	then \
+-	    $(mkinstalldirs) $(DESTDIR)$(sysconfdir) ; \
+-	    [ "`id -u`" != 0 ] || chown -f @USER@:@GROUP@ $(DESTDIR)$(sysconfdir); \
+-		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir) ; \
++	    $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/httpd ; \
++	    [ "`id -u`" != 0 ] || chown -f @USER@:@GROUP@ $(DESTDIR)$(sysconfdir)/httpd; \
++		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir)/httpd ; \
+ 	fi
+ 
+ install-mod: $(MOD_DGEE) install-mod-conf
