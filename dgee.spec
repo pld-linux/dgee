@@ -4,8 +4,9 @@
 Summary:	The DotGNU Execution Environment Core
 Name:		dgee
 Version:	0.1.6
-Release:	%{_rel}.0.1.3
+Release:	%{_rel}.0.1.4
 Source0:	http://www.nfluid.com/download/src/%{name}-%{version}-%{_rel}.tgz
+Source1:	%{name}.init
 # Source0-md5:	a2573a076832c4c7212479cabda15eff
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-apache.patch
@@ -32,6 +33,7 @@ of accepting, validating and satisfying web service requests.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+
 %build
 %{__aclocal}
 %{__autoconf}
@@ -39,6 +41,7 @@ of accepting, validating and satisfying web service requests.
 %configure \
 	--with-goldwater=%{_prefix} \
 	--with-pnet=%{_prefix} \
+	--with-repository=/var/lib/%{name} \
 	--with-username=http \
 	--with-usergroup=http \
 %if %{with apache1}
@@ -65,6 +68,19 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	APACHE=
 %endif
+# Thise files should be installed by Makefile (I can't fix it):
+install cslib/DotGNU/DGEE/DotGNU.DGEE.dll \
+	$RPM_BUILD_ROOT/%{_libdir}/%{name}
+install cslib/System/Web/Services/System.Web.Services.dll \
+	$RPM_BUILD_ROOT/%{_libdir}/%{name}
+install cslib/DotGNU/DGEE/Protocols/XmlRpc/XmlRpcService.exe \
+	$RPM_BUILD_ROOT/%{_libdir}/%{name}
+
+install -d $RPM_BUILD_ROOT/var/lib/%{name}/{index,data}
+install -d $RPM_BUILD_ROOT/var/log/%{name}
+install -d $RPM_BUILD_ROOT/var/log/archiv/%{name}
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 %post
 %if %{with apache1}
@@ -113,6 +129,10 @@ fi
 #%{_libdir}/apache/mod_%{name}.so
 %endif
 %{_datadir}/%{name}
+/var/lib/%{name}
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%attr(750,root,root) %dir /var/log/%{name}
+%attr(750,root,root) %dir /var/log/archiv/%{name}
 
 # Local variables:
 # mode: rpm-spec
