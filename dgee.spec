@@ -10,6 +10,7 @@ Patch1:		%{name}-apache.patch
 License:	GPL
 Vendor:		DotGNU
 Group:		Networking/Daemons
+BuildRequires:	apache-devel
 BuildRequires:	expat-devel
 BuildRequires:	goldwater-devel => 0.3.4
 BuildRequires:	phlib-devel => 1.20
@@ -31,14 +32,18 @@ of accepting, validating and satisfying web service requests.
 %{__automake}
 %configure \
 	--with-goldwater=%{_prefix} \
-	--with-pnet=%{_prefix}
+	--with-pnet=%{_prefix} \
+	--without-apache \
+	--with-apache2=%{_prefix}
 
-%{__make}
+%{__make} \
+	APACHE=
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	APACHE=
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -47,11 +52,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc BINARYINSTALL INSTALL QUICKSTART README COPYING
 %attr(755,root,root) %{_bindir}/*
 %config %{_sysconfdir}/%{name}*
-%config %{_sysconfdir}/httpd/mod_%{name}.conf
 %{_libdir}/%{name}
 %{_libdir}/libdgee.*
 %{_libdir}/libdgxml.*
-%{_libdir}/apache/mod_%{name}.so
+#%config %{_sysconfdir}/httpd/mod_%{name}.conf
+#%{_libdir}/apache/mod_%{name}.so
 %{_datadir}/%{name}
 
 # Local variables:
