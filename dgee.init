@@ -23,7 +23,7 @@ SRC_CONFIG=/etc/dgeeconf.xml
 
 # Get service config - may override defaults
 [ -f /etc/sysconfig/dgee ] && . /etc/sysconfig/dgee
-
+export GWCONFIG
 
 
 # Check that networking is up.
@@ -48,7 +48,7 @@ case "$1" in
 		busy
 		goldwater --prompt='dotGNU DGEE' start
 		if [ $?="0" ]; then
-		    log_succes "dgee startup"
+		    log_success "dgee startup"
 		    goldwater --prompt='dotGNU DGEE' boot
 		    if [ $?="0" ]; then
 			    log_success "dgeews startup"
@@ -78,11 +78,11 @@ case "$1" in
 	if [ -f /var/lock/subsys/dgee ]; then
 		# Stop daemons.
 		# show "Stopping %s service" dgee
-		msg_stopping dgee (and web services)
+		msg_stopping dgee
 		busy
 		goldwater --prompt='dotGNU DGEE' stop
 		if [ $?="0" ]; then
-		    log_succes "dgee shutdown"
+		    log_success "dgee shutdown"
 		    ok
 		    rm -f /var/lock/subsys/dgee
 		    exit 0
