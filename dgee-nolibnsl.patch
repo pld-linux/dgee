@@ -1,0 +1,33 @@
+--- dgee-0.1.6/nullvm/Makefile.in.orig	2003-09-21 10:41:49.000000000 +0000
++++ dgee-0.1.6/nullvm/Makefile.in	2004-01-14 09:57:13.000000000 +0000
+@@ -20,7 +20,7 @@
+ 
+ LFLAG   = -L../dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
+ 
+-ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -lnsl -ldl -lm
++ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -ldl -lm
+ 
+ OBJS = $(addprefix $(OBJ)/,$(OBJF))
+ 
+--- dgee-0.1.6/pnetvm/Makefile.am.orig	2004-01-14 09:51:12.000000000 +0000
++++ dgee-0.1.6/pnetvm/Makefile.am	2004-01-14 09:57:36.000000000 +0000
+@@ -16,7 +16,7 @@
+ 
+ LFLAG = -L@top_srcdir@/dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
+ 
+-ILLFLAG = -L@PNETBASE@/lib -L@PNETBASE@/lib/pnet -L@PXLBASE@/lib -L@GWBASE@/lib -lILEngine -lILDumpAsm -lILImage -lILSupport -lffi -lnsl @LOCAL_LDFLAGS@ -lm -lpthread -lgc -lz
++ILLFLAG = -L@PNETBASE@/lib -L@PNETBASE@/lib/pnet -L@PXLBASE@/lib -L@GWBASE@/lib -lILEngine -lILDumpAsm -lILImage -lILSupport -lffi @LOCAL_LDFLAGS@ -lm -lpthread -lgc -lz
+ 
+ OBJS = $(addprefix $(OBJ)/,$(OBJF))
+ 
+--- dgee-0.1.6/pythonvm/Makefile.in.orig	2004-01-14 09:51:12.000000000 +0000
++++ dgee-0.1.6/pythonvm/Makefile.in	2004-01-14 09:59:53.000000000 +0000
+@@ -20,7 +20,7 @@
+ 
+ LFLAG   = -L../dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
+ 
+-ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -lnsl -ldl -lm -lpython2.3
++ILLFLAG = -L@PXLBASE@/lib -L@GWBASE@/lib -L/usr/lib/python2.3/config -ldl -lm -lpython2.3
+ 
+ OBJS = $(addprefix $(OBJ)/,$(OBJF))
+ 
