@@ -113,6 +113,12 @@ if [ -f /var/lock/subsys/httpd ]; then
 fi
 
 /sbin/ldconfig
+
+if [ -f /var/lock/subsys/dgee ]; then
+        /etc/rc.d/init.d/dgee restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/dgee start\" to start goltwater and dgee services."
+fi
 /sbin/chkconfig --add dgee
 
 %preun
@@ -127,8 +133,11 @@ if [ "$1" = "0" ]; then
         if [ -f /var/lock/subsys/httpd ]; then
                 /etc/rc.d/init.d/httpd restart 1>&2
         fi
+        if [ -f /var/lock/subsys/dgee ]; then
+                /etc/rc.d/init.d/dgee stop 1>&2
+        fi
+        /sbin/chkconfig --del dgee
 fi
-/sbin/chkconfig --del dgee
 
 %postun
 /sbin/ldconfig
