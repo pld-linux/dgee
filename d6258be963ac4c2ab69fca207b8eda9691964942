@@ -1,0 +1,4 @@
+- Requires: apache
+- %bcond_with apache1
+- add %post %postun scripts
+- rel 0.1.1
