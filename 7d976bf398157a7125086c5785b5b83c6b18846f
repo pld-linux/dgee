@@ -1,0 +1,7 @@
+- rel 0.1.5
+- add logrotate script
+- add empty log files owned by root.http with 660 perms (I think this
+  perms should be 620, but goldwater opens log files in rw mode)
+- add /sbin/ldconfig in %post %postun
+- fix file's prems in /usr/lib/dgee directory
+- it works! - goldwater starts correctly and it can boot dgee apps
