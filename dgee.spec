@@ -1,7 +1,6 @@
 #
 # TODO: 
-#  --without apache1 (default) should build mod_dgee.so for 
-#  apache2 - it doesn't
+#  --without apache1 (default) should build mod_dgee.so for apache2 - it doesn't
 # 
 # Conditional build:
 %bcond_with	apache1
@@ -42,7 +41,7 @@ BuildRequires:	%{apxs}
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	%{apxs}
 Requires(post,preun):	/sbin/chkconfig
-Requires:	apache
+Requires:	webserver = apache
 Requires:	goldwater
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
