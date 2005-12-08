@@ -55,7 +55,6 @@ goldwater_boot () {
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		# nls "ERROR: Networking is down. %s can't be run." dgee
 		msg_network_down dgee
 		exit 1
 	fi
@@ -69,7 +68,6 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/dgee ]; then
-		# show "Starting %s service" dgee
 		msg_starting dgee
 		busy
 		goldwater_start
@@ -95,14 +93,12 @@ case "$1" in
 			exit 1
 		fi
 	else
-		# show "%s service is already running." dgee
 		msg_already_running dgee
 	fi
 	;;
   stop)
 	if [ -f /var/lock/subsys/dgee ]; then
 		# Stop daemons.
-		# show "Stopping %s service" dgee
 		msg_stopping dgee
 		busy
 		goldwater_stop
@@ -116,7 +112,6 @@ case "$1" in
 			rm -f /var/lock/subsys/dgee
 		fi  	
 	else
-		# show "%s service is not running." dgee
 		msg_not_running dgee
 	fi
 	;;
@@ -130,7 +125,6 @@ case "$1" in
 		goldwater --prompt='dotGNU DGEE' cycle
 		RETVAL=$?
 	else
-		# show "%s service is not running." dgee
 		msg_not_running dgee >&2
 		RETVAL=7
 	fi
@@ -147,7 +141,6 @@ case "$1" in
 	RETVAL=$?
 	;;
   *)
-	# show "Usage: %s {start|stop|restart|reload|force-reload|status}"
 	msg_usage "$0 \
 		{start|stop|restart|reload-ws|force-reload|status|compilecfg}"
 	exit 3
