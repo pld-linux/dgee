@@ -110,7 +110,7 @@ case "$1" in
 			log_failed "dgee shutdown"
 			fail
 			rm -f /var/lock/subsys/dgee
-		fi  	
+		fi
 	else
 		msg_not_running dgee
 	fi
