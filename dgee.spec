@@ -1,7 +1,7 @@
 #
-# TODO: 
+# TODO:
 #  --without apache1 (default) should build mod_dgee.so for apache2 - it doesn't
-# 
+#
 # Conditional build:
 %bcond_with	apache1
 #
@@ -26,23 +26,23 @@ Patch3:		%{name}-pythonvm.patch
 Patch4:		%{name}-pic.patch
 Patch5:		%{name}-nolibnsl.patch
 URL:		http://www.dotgnu.org/dgee.html
+BuildRequires:	%{apxs}
 BuildRequires:	apache-devel
 BuildRequires:	autoconf >= 2.13
 BuildRequires:	automake
 BuildRequires:	expat-devel
-BuildRequires:	libffi-devel
 BuildRequires:	gc-devel
 BuildRequires:	goldwater-devel => 0.3.4
+BuildRequires:	libffi-devel
 BuildRequires:	phlib-devel => 1.20
 BuildRequires:	pnet-compiler-csharp
 BuildRequires:	pnet-devel => 0.6.0-2
 BuildRequires:	pnetlib-base
-BuildRequires:	%{apxs}
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	%{apxs}
 Requires(post,preun):	/sbin/chkconfig
-Requires:	webserver = apache
 Requires:	goldwater
+Requires:	webserver = apache
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -86,7 +86,7 @@ export CFLAGS
 %endif
 
 %if %{with apache1}
-%{__make} 
+%{__make}
 %else
 %{__make} \
 	APACHE=
@@ -97,7 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with apache1}
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT 
+	DESTDIR=$RPM_BUILD_ROOT
 %else
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -173,9 +173,9 @@ fi
 %attr(755,root,root) %{_libdir}/libdgxml.so.*.*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}*
 %if %{with apache1}
-%config %verify(not size mtime md5) %{_sysconfdir}/httpd/mod_%{name}.conf
+%config %verify(not md5 mtime size) %{_sysconfdir}/httpd/mod_%{name}.conf
 %{_libdir}/apache/mod_%{name}.so
 %else
 #%config %{_sysconfdir}/httpd/mod_%{name}.conf
@@ -187,4 +187,4 @@ fi
 %attr(730,root,http) %dir /var/log/%{name}
 %attr(660,root,http) /var/log/%{name}/*
 %attr(750,root,root) %dir /var/log/archiv/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
