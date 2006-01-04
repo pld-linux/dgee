@@ -12,7 +12,7 @@ Summary:	The DotGNU Execution Environment Core
 Summary(pl):	Podstawa ¶rodowiska wykonawczego DotGNU
 Name:		dgee
 Version:	%{base_version}_%{subver}
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.nfluid.com/download/src/%{name}-%{base_version}-%{subver}.tgz
