@@ -68,7 +68,7 @@ sprawdzania poprawno¶ci i wykonywania ¿±dañ us³ug WWW.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-CFLAGS="%{rpmcflags} -I/usr/include/python2.4 -I/usr/include/python2.3"
+CFLAGS="%{rpmcflags} -I/usr/include/python2.4"
 export CFLAGS
 %configure \
 	cflags=our \
