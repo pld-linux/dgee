@@ -32,11 +32,11 @@ BuildRequires:	autoconf >= 2.13
 BuildRequires:	automake
 BuildRequires:	expat-devel
 BuildRequires:	gc-devel
-BuildRequires:	goldwater-devel => 0.3.4
+BuildRequires:	goldwater-devel >= 0.3.4
 BuildRequires:	libffi-devel
-BuildRequires:	phlib-devel => 1.20
+BuildRequires:	phlib-devel >= 1.20
 BuildRequires:	pnet-compiler-csharp
-BuildRequires:	pnet-devel => 0.6.0-2
+BuildRequires:	pnet-devel >= 0.6.0-2
 BuildRequires:	pnetlib-base
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	%{apxs}
