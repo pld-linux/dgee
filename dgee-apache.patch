@@ -6,8 +6,8 @@
  install-mod: $(MOD_DGEE) install-mod-conf
 -	$(APXS) -i -S LIBEXECDIR=$(MOD_DGEE_DIR) -a $<
 +#	$(APXS) -i -S LIBEXECDIR=$(MOD_DGEE_DIR) -a $<
-+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache/
-+	$(INSTALL) $(MOD_DGEE) $(DESTDIR)$(libexecdir)/apache/
++	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache1/
++	$(INSTALL) $(MOD_DGEE) $(DESTDIR)$(libexecdir)/apache1/
  
  directories:
  
@@ -20,9 +20,173 @@
 -	    $(mkinstalldirs) $(DESTDIR)$(sysconfdir) ; \
 -	    [ "`id -u`" != 0 ] || chown -f @USER@:@GROUP@ $(DESTDIR)$(sysconfdir); \
 -		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir) ; \
-+	    $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/httpd ; \
-+	    [ "`id -u`" != 0 ] || chown -f @USER@:@GROUP@ $(DESTDIR)$(sysconfdir)/httpd; \
-+		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir)/httpd ; \
++	    $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/apache/conf.d ; \
++	    [ "`id -u`" != 0 ] || chown -f @USER@:@GROUP@ $(DESTDIR)$(sysconfdir)/apache/conf.d; \
++		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir)/apache/conf.d/40_mod_dgee.conf ; \
  	fi
  
  install-mod: $(MOD_DGEE) install-mod-conf
+--- dgee-0.1.6/configure.in~	2003-10-30 23:26:50.000000000 +0200
++++ dgee-0.1.6/configure.in	2006-03-05 11:37:32.000000000 +0200
+@@ -112,10 +112,10 @@
+ 	 LMBASE=/usr/local
+ ])
+ 
+-APACHE=apache
++APACHE=
+ dnl Location of Apache's apxs
+ AC_ARG_WITH(apache,
+-	[  --with-apache=libpath   Implicitly point to directory containing apache apxs (use --without to disable apache (v1) support) [Enabled]],
++	[  --with-apache=libpath   Enable Apache (and Implicitly point to directory containing apache apxs if required) [Disabled]],
+ 	[if test "$withval" = yes; then
+ 	    APXSBASE=/usr/local/sbin
+ 	 else
+--- dgee-0.1.6/configure.in~	2006-03-05 11:56:03.000000000 +0200
++++ dgee-0.1.6/configure.in	2006-03-05 12:00:21.000000000 +0200
+@@ -135,8 +135,8 @@
+ 	[  --with-apache2=libpath   Enable Apache2 (and Implicitly point to directory containing apache2 apxs if required) [Disabled]],
+ 	[if test "$withval" = yes; then
+ 	    APXS2BASE=/usr/local/sbin
+-		APACHE2=apache2
+ 	else
++		APACHE2=apache2
+ 	    APXS2BASE=$withval
+ 	fi
+ 	AC_SUBST(APXS2BASE)
+--- dgee-0.1.6/configure.in~	2006-03-05 12:00:21.000000000 +0200
++++ dgee-0.1.6/configure.in	2006-03-05 12:02:19.000000000 +0200
+@@ -119,8 +119,9 @@
+ 	[if test "$withval" = yes; then
+ 	    APXSBASE=/usr/local/sbin
+ 	 else
+-          	APACHE=apache
++		APACHE=apache
+ 	    APXSBASE=$withval
++	    APXS=$withval
+ 	 fi
+ 	 AC_SUBST(APXSBASE)
+ 	],[ 
+@@ -138,6 +139,7 @@
+ 	else
+ 		APACHE2=apache2
+ 	    APXS2BASE=$withval
++	    APXS2=$withval
+ 	fi
+ 	AC_SUBST(APXS2BASE)
+ 	],[ 
+@@ -274,10 +276,6 @@
+ test -n "$ARFLAGS" || ARFLAGS="cr"
+ AC_PROG_RANLIB
+ 
+-dnl Check for apxs in the path.  
+-AC_PATH_PROG([APXS], [apxs], [/usr/local/sbin/apxs], [$APXSBASE:$PATH:/usr/local/sbin:/usr/sbin])
+-AC_PATH_PROG([APXS2], [apxs2], [/usr/local/sbin/apxs2], [$APXS2BASE:$PATH:/usr/local/sbin:/usr/sbin])
+-
+ dnl Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+ AC_STRUCT_TM
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:10:06.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:10:07.000000000 +0200
+@@ -68,7 +68,7 @@
+ 	fi
+ 
+ install-mod: $(MOD_DGEE2) install-mod-conf
+-	$(APXS2) -i -S LIBEXECDIR=$(MOD_DGEE2_DIR) -a $<
++	$(APXS2) -i -S DESTDIR=$(DESTDIR) $<
+ 
+ directories:
+ 
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:10:35.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:11:40.000000000 +0200
+@@ -26,16 +26,6 @@
+ 
+ $(MOD_DGEE2): mod_dgee2.c replace
+ 	$(APXS2) -DEAPI -DDOTGNUVERSION="'\""$(DOTGNUVERSION)"\"'" -DDGVERSION="'\""$(DGVERSION)"\"'" $(ALLINC) -c mod_dgee2.c $(LFLAG)
+-	@( if [ ! -e "$(MOD_DGEE2)" ] ; \
+-	then \
+-	 echo Info: ERROR $(MOD_DGEE2) not created... ;\
+-	 echo Info: If this compile fails because apxs cannot be found, then ;\
+-	 echo Info: reconfigure DGEE with --with-apache2=directory where apache2 apxs;\
+-	 echo Info: may be found.  If you don\'t have apxs installed, then you may;\
+-	 echo Info: be able to use the mod_dgee2.so in the ./precompiled directory.;\
+-	 echo Info: Do \"cp apache2/precompiled/mod_dgee2.so apache\" before doing;\
+-	 echo Info: the install if this is the case. ;\
+-	fi )
+ 
+ replace:
+ 	$(edit) mod_dgee2.conf > mod_dgee2.conf.tmp
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:12:11.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:13:05.000000000 +0200
+@@ -58,7 +58,7 @@
+ 	fi
+ 
+ install-mod: $(MOD_DGEE2) install-mod-conf
+-	$(APXS2) -i -S DESTDIR=$(DESTDIR) $<
++	$(APXS2) -i -S DESTDIR=$(DESTDIR) mod_dgee2.la
+ 
+ directories:
+ 
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:13:15.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:23:00.000000000 +0200
+@@ -24,7 +24,7 @@
+ 
+ fresh: clean all
+ 
+-$(MOD_DGEE2): mod_dgee2.c replace
++$(MOD_DGEE2): mod_dgee2.c
+ 	$(APXS2) -DEAPI -DDOTGNUVERSION="'\""$(DOTGNUVERSION)"\"'" -DDGVERSION="'\""$(DGVERSION)"\"'" $(ALLINC) -c mod_dgee2.c $(LFLAG)
+ 
+ replace:
+--- dgee-0.1.6/apache/Makefile.am~	2006-03-05 12:23:22.000000000 +0200
++++ dgee-0.1.6/apache/Makefile.am	2006-03-05 12:24:03.000000000 +0200
+@@ -63,8 +63,7 @@
+ 		$(INSTALL) $(MOD_DGEE_CONF) $(DESTDIR)$(sysconfdir)/apache/webapps.d ; \
+ 	fi
+ 
+-install-mod: $(MOD_DGEE) install-mod-conf
+-#	$(APXS) -i -S LIBEXECDIR=$(MOD_DGEE_DIR) -a $<
++install-mod: $(MOD_DGEE)
+ 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache1/
+ 	$(INSTALL) $(MOD_DGEE) $(DESTDIR)$(libexecdir)/apache1/
+ 
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:23:00.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:24:34.000000000 +0200
+@@ -58,6 +58,7 @@
+ 	fi
+ 
+ install-mod: $(MOD_DGEE2) install-mod-conf
++	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache/
+ 	$(APXS2) -i -S DESTDIR=$(DESTDIR) mod_dgee2.la
+ 
+ directories:
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:31:52.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:49:31.000000000 +0200
+@@ -25,7 +25,7 @@
+ fresh: clean all
+ 
+ $(MOD_DGEE2): mod_dgee2.c
+-	$(APXS2) -DEAPI -DDOTGNUVERSION="'\""$(DOTGNUVERSION)"\"'" -DDGVERSION="'\""$(DGVERSION)"\"'" $(ALLINC) -c mod_dgee2.c $(LFLAG)
++	$(APXS2) -DEAPI -DDOTGNUVERSION="'\""$(DOTGNUVERSION)"\"'" -DDGVERSION="'\""$(DGVERSION)"\"'" $(ALLINC) -c mod_dgee2.c -o mod_dgee.la $(LFLAG)
+ 
+ replace:
+ 	$(edit) mod_dgee2.conf > mod_dgee2.conf.tmp
+@@ -59,7 +59,7 @@
+ 
+ install-mod: $(MOD_DGEE2) install-mod-conf
+ 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache/
+-	$(APXS2) -i -S DESTDIR=$(DESTDIR) mod_dgee2.la
++	$(APXS2) -i -S DESTDIR=$(DESTDIR) mod_dgee.la
+ 
+ directories:
+ 
+--- dgee-0.1.6/apache2/Makefile.am~	2006-03-05 12:51:56.000000000 +0200
++++ dgee-0.1.6/apache2/Makefile.am	2006-03-05 12:54:18.000000000 +0200
+@@ -59,7 +59,7 @@
+ 
+ install-mod: $(MOD_DGEE2) install-mod-conf
+ 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/apache/
+-	$(APXS2) -i -S DESTDIR=$(DESTDIR) mod_dgee.la
++	$(APXS2) -i -n mod_dgee -S DESTDIR=$(DESTDIR) mod_dgee.la
+ 
+ directories:
+ 
