@@ -1,0 +1,65 @@
+http://ajmitch.linuxworks.co.nz/dotgnu.log.18Jun2005
+[08:38] <spacelobster> it looks like the guy who programmed pnetvm.c used the following when he built pnet
+[08:38] <spacelobster> ./configure --with-profile=kernel
+
+i tried to compile pnet with option --with-profile=kernel, but then pnet didn't compile at ll
+
+this might be correct:
+--- dgee-0.1.6/pnetvm/pnetvm.c~	2006-03-05 11:23:24.000000000 +0200
++++ dgee-0.1.6/pnetvm/pnetvm.c	2006-03-05 11:23:28.000000000 +0200
+@@ -103,7 +103,11 @@
+ 
+   DBG( LOG_DEBUG, "ILExecInit" );
+   /* Initialize the engine and set the maximum heap size */
++#ifdef IL_CONFIG_APPDOMAINS
++  ILExecInit(heapSize, stackSize);
++#else
+   ILExecInit(heapSize);
++#endif
+ 
+   DBG( LOG_DEBUG, "ILMalloc" );
+   /* Allocate space for the library list */
+@@ -112,7 +116,11 @@
+ 	
+   DBG( LOG_DEBUG, "ILExecProcessCreate" );
+   /* Create a process to load the program into */
++#ifdef IL_CONFIG_APPDOMAINS
++  process = ILExecProcessCreate(methodCachePageSize);
++#else
+   process = ILExecProcessCreate(stackSize, methodCachePageSize);
++#endif
+ 
+   if(!process) {
+     printf( "%s: could not create process\n", progname);
+
+
+this one. i don't know at least compiles, what i need atm
+--- dgee-0.1.6/pnetvm/pnetvm.c~	2006-03-05 11:23:28.000000000 +0200
++++ dgee-0.1.6/pnetvm/pnetvm.c	2006-03-05 11:26:34.000000000 +0200
+@@ -149,11 +149,13 @@
+     return 1;
+   }
+ 
++#ifndef IL_CONFIG_APPDOMAINS
+   /* Import internalCalls from int_dgee.c
+    */
+   ILExecProcessAddInternalCallTable( process, 
+                                      (ILEngineInternalClassInfo*)internalClassTable,
+                                      numInternalClasses );
++#endif
+   
+ 
+   return 0;
+
+as pnet libraries are static, the can't carry ncurses dep, somehow it should be autodetected probably.
+--- dgee-0.1.6/pnetvm/Makefile.am~	2006-03-05 11:32:19.000000000 +0200
++++ dgee-0.1.6/pnetvm/Makefile.am	2006-03-05 11:32:21.000000000 +0200
+@@ -14,7 +14,7 @@
+ ALLINC = -I. -I@top_srcdir@/dglib -I@PXLBASE@/include -I@PNETBASE@/include/pnet -I@GWBASE@/include/goldwater
+ CFLAGS = @CFLAGS@ -D_SVID_SOURCE @LOCAL_CFLAGS@ -c $(ALLINC)
+ 
+-LFLAG = -L@top_srcdir@/dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@
++LFLAG = -L@top_srcdir@/dglib -L@PXLBASE@/lib -L@GWBASE@/lib -ldgee -lgwtx -lpxtra @LOCAL_LDFLAGS@ -lncurses
+ 
+ ILLFLAG = -L@PNETBASE@/lib -L@PNETBASE@/lib/pnet -L@PXLBASE@/lib -L@GWBASE@/lib -lILEngine -lILDumpAsm -lILImage -lILSupport -lffi @LOCAL_LDFLAGS@ -lm -lpthread -lgc -lz
+ 
