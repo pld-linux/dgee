@@ -4,6 +4,7 @@
 # Conditional build:
 %bcond_without	apache1		# disable building apache 1.3.x module
 %bcond_without	apache2		# disable building apache 2.x module
+%bcond_with	i_have_checked_this_patch_works_not_just_compiles
 #
 %define		apxs1		/usr/sbin/apxs1
 %define		apxs2		/usr/sbin/apxs
