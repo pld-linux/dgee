@@ -11,7 +11,7 @@
 %define		subver		2
 %define		base_version	0.1.6
 Summary:	The DotGNU Execution Environment Core
-Summary(pl):	Podstawa ∂rodowiska wykonawczego DotGNU
+Summary(pl.UTF-8):   Podstawa ≈õrodowiska wykonawczego DotGNU
 Name:		dgee
 Version:	%{base_version}_%{subver}
 Release:	2.2
@@ -55,14 +55,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 The core DotGNU Execution Environment that provides the functionality
 of accepting, validating and satisfying web service requests.
 
-%description -l pl
-Ten pakiet zawiera podstawÍ ∂rodowiska wykonawczego DotGNU (DotGNU
-Execution Environment) dostarczaj±c± funkcjonalno∂Ê przyjmowania,
-sprawdzania poprawno∂ci i wykonywania ø±daÒ us≥ug WWW.
+%description -l pl.UTF-8
+Ten pakiet zawiera podstawƒô ≈õrodowiska wykonawczego DotGNU (DotGNU
+Execution Environment) dostarczajƒÖcƒÖ funkcjonalno≈õƒá przyjmowania,
+sprawdzania poprawno≈õci i wykonywania ≈ºƒÖda≈Ñ us≈Çug WWW.
 
 %package -n apache1-mod_dgee
 Summary:	DGEE DSO module for Apache 1.3.x
-Summary(pl):	Modu≥ DSO DGEE dla Apache'a 1.3.x
+Summary(pl.UTF-8):   Modu≈Ç DSO DGEE dla Apache'a 1.3.x
 Group:		Networking/Daemons
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache1(EAPI) >= 1.3.33-2
@@ -71,13 +71,13 @@ Requires:	apache1-mod_mime
 %description -n apache1-mod_dgee
 The DotGNU Execution Environment Core DSO module for Apache 1.3.x.
 
-%description -n apache1-mod_dgee -l pl
-Modu≥ DSO podstawy ∂rodowiska wykonawczego DotGNU (DotGNU Execution
+%description -n apache1-mod_dgee -l pl.UTF-8
+Modu≈Ç DSO podstawy ≈õrodowiska wykonawczego DotGNU (DotGNU Execution
 Environment) dla Apache'a 1.3.x.
 
 %package -n apache-mod_dgee
 Summary:	DGEE DSO module for Apache 2.x
-Summary(pl):	Modu≥ DSO DGEE dla Apache'a 2.x
+Summary(pl.UTF-8):   Modu≈Ç DSO DGEE dla Apache'a 2.x
 Group:		Networking/Daemons
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache(modules-api) = %{apache_modules_api}
@@ -86,8 +86,8 @@ Requires:	apache-mod_mime
 %description -n apache-mod_dgee
 The DotGNU Execution Environment Core DSO module for Apache 2.x.
 
-%description -n apache-mod_dgee -l pl
-Modu≥ DSO podstawy ∂rodowiska wykonawczego DotGNU (DotGNU Execution
+%description -n apache-mod_dgee -l pl.UTF-8
+Modu≈Ç DSO podstawy ≈õrodowiska wykonawczego DotGNU (DotGNU Execution
 Environment) dla Apache'a 1.3.x.
 
 %prep
