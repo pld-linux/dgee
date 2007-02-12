@@ -11,7 +11,7 @@
 %define		subver		2
 %define		base_version	0.1.6
 Summary:	The DotGNU Execution Environment Core
-Summary(pl.UTF-8):   Podstawa środowiska wykonawczego DotGNU
+Summary(pl.UTF-8):	Podstawa środowiska wykonawczego DotGNU
 Name:		dgee
 Version:	%{base_version}_%{subver}
 Release:	2.2
@@ -62,7 +62,7 @@ sprawdzania poprawności i wykonywania żądań usług WWW.
 
 %package -n apache1-mod_dgee
 Summary:	DGEE DSO module for Apache 1.3.x
-Summary(pl.UTF-8):   Moduł DSO DGEE dla Apache'a 1.3.x
+Summary(pl.UTF-8):	Moduł DSO DGEE dla Apache'a 1.3.x
 Group:		Networking/Daemons
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache1(EAPI) >= 1.3.33-2
@@ -77,7 +77,7 @@ Environment) dla Apache'a 1.3.x.
 
 %package -n apache-mod_dgee
 Summary:	DGEE DSO module for Apache 2.x
-Summary(pl.UTF-8):   Moduł DSO DGEE dla Apache'a 2.x
+Summary(pl.UTF-8):	Moduł DSO DGEE dla Apache'a 2.x
 Group:		Networking/Daemons
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache(modules-api) = %{apache_modules_api}
