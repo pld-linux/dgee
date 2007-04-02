@@ -1,0 +1,8 @@
+- add --with-repository=/var/lib/dgee
+- install some forgoten files (should be done in Makefile)
+- install /var/log/dgee and /var/log/archive/dgee directories
+- install /var/lib/dgee/{data,index} directories; Makefile install
+  /var/lib/dgee/datadir directory; I don't know which one (data or datadir)
+  is really needed (http://www.dotgnu.org/dgee-samples.html)
+- add initscript (not tested, not finished)
+- rel 0.1.4 - ready for tests
