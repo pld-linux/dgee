@@ -137,7 +137,7 @@ install cslib/DotGNU/DGEE/Protocols/XmlRpc/XmlRpcService.exe \
 install -d $RPM_BUILD_ROOT/var/lib/%{name}/{index,data}
 install -d $RPM_BUILD_ROOT/var/log/%{name}
 touch $RPM_BUILD_ROOT/var/log/%{name}/{%{name}.log,stdout,stderr}
-install -d $RPM_BUILD_ROOT/var/log/archiv/%{name}
+install -d $RPM_BUILD_ROOT/var/log/archive/%{name}
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install -d $RPM_BUILD_ROOT/etc/logrotate.d
@@ -196,7 +196,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(730,root,http) %dir /var/log/%{name}
 %attr(660,root,http) /var/log/%{name}/*
-%attr(750,root,root) %dir /var/log/archiv/%{name}
+%attr(750,root,root) %dir /var/log/archive/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 
 %if %{with apache1}
