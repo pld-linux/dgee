@@ -1,22 +1,26 @@
 /var/log/dgee/degee.log {
-    create create 660 root http
-    olddir /var/log/archive/dgee
-    postrotate
-	/etc/rc.d/init.d/dgee restart
-    endscript
-}
-/var/log/dgee/stdout {
-    create create 660 root http
-    olddir /var/log/archive/dgee
-    postrotate
-	/etc/rc.d/init.d/dgee restart
-    endscript
-}
-/var/log/dgee/stderr {
-    create create 660 root http
-    olddir /var/log/archive/dgee
-    postrotate
-	/etc/rc.d/init.d/dgee restart
-    endscript
+	su root http
+	create create 660 root http
+	olddir /var/log/archive/dgee
+	postrotate
+		/etc/rc.d/init.d/dgee restart
+	endscript
 }
 
+/var/log/dgee/stdout {
+	su root http
+	create create 660 root http
+	olddir /var/log/archive/dgee
+	postrotate
+		/etc/rc.d/init.d/dgee restart
+	endscript
+}
+
+/var/log/dgee/stderr {
+	su root http
+	create create 660 root http
+	olddir /var/log/archive/dgee
+	postrotate
+		/etc/rc.d/init.d/dgee restart
+	endscript
+}
